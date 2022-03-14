@@ -38,14 +38,6 @@
   npm start
 </pre>
 
-## 6° Logs monitoring
-<pre>
-  tail -f log.txt
-
-  tail -f err.txt
-</pre>
-</br>
-
 # Windows 10
 ## 1° Install Node.js
 <pre>
