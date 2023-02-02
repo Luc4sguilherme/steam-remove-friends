@@ -37,6 +37,9 @@
       "import/extensions": [
         "error",
         "ignorePackages"
-      ]
+      ],
+      "no-restricted-syntax": ["error", "FunctionExpression", "WithStatement", "BinaryExpression[operator='in']"],
+      "no-process-exit": 0,
+      "no-loop-func": "off"
   }
 }

@@ -24,8 +24,6 @@ client.on('webSession', async (value, cookies) => {
   manager.setCookies(cookies, (error) => {
     if (error) {
       log.error('An error occurred while setting cookies.');
-    } else {
-      log.info('Websession created and cookies set.');
     }
   });
 
@@ -36,6 +34,7 @@ client.on('webSession', async (value, cookies) => {
   );
 
   await removeFriends();
+  process.exit(0);
 });
 
 client.on('error', (error) => {
@@ -76,33 +75,21 @@ client.on('error', (error) => {
   }
 });
 
-client.on('friendRelationship', (sender, rel) => {
-  if (rel === 0) {
-    log.info(
-      `User ID: ${sender.getSteamID64()} has deleted from their friendlist.`
-    );
-  }
-});
-
-client.on('emailInfo', (address) => {
-  log.info(`E-Mail: ${address}`);
-});
-
 client.on(
   'accountLimitations',
   (limited, communityBanned, locked, canInviteFriends) => {
     if (limited) {
-      log.info(
+      log.warn(
         'Account is limited. Cannot send friend invites, use the market, open group chat, or access the web API.'
       );
       client.logOff();
     }
     if (communityBanned) {
-      log.info('Account is banned from Steam Community');
+      log.warn('Account is banned from Steam Community');
       client.logOff();
     }
     if (locked) {
-      log.info(
+      log.warn(
         'Account is locked. We cannot trade/gift/purchase items, play on VAC servers, or access Steam Community.  Shutting down.'
       );
       client.logOff();
@@ -110,7 +97,7 @@ client.on(
       process.exit(1);
     }
     if (!canInviteFriends) {
-      log.info('Account is unable to send friend requests.');
+      log.warn('Account is unable to send friend requests.');
       client.logOff();
     }
   }
