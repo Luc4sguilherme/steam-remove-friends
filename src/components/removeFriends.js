@@ -25,14 +25,14 @@ export default async () => {
 
     const task = async ([friend, state]) => {
       if (state === SteamUser.EFriendRelationship.Friend) {
-        const profile = await getUser(friend);
+        const user = await getUser(friend);
 
         if (
-          (main.filters.tradeBan && profile.tradeBanState !== 'None') ||
-          (main.filters.vacBan && profile.vacBanned) ||
-          (main.filters.limitedAccount && profile.isLimitedAccount) ||
-          profile.level <= main.filters.steamLevel ||
-          profile.lastTimeOnline >= main.filters.inactiveDays
+          (main.filters.tradeBan && user.tradeBanState !== 'None') ||
+          (main.filters.vacBan && user.vacBanned) ||
+          (main.filters.limitedAccount && user.isLimitedAccount) ||
+          user.level <= main.filters.steamLevel ||
+          user.lastTimeOnline >= main.filters.inactiveDays
         ) {
           client.removeFriend(friend);
           friendsRemoved += 1;
@@ -49,7 +49,7 @@ export default async () => {
     progressBar.stop();
 
     log.info(
-      `Operation performed successfully: ${friendsRemoved} users removed.`
+      `Operation performed successfully: ${friendsRemoved} user(s) removed.`
     );
   } catch (error) {
     console.clear();
