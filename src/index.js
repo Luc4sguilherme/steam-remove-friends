@@ -4,7 +4,7 @@ import SteamUser from 'steam-user';
 
 import log from './components/log.js';
 import removeFriends from './components/removeFriends.js';
-import { client, community, manager } from './components/steamClient.js';
+import { client, community } from './components/steamClient.js';
 import main from './config/main.js';
 
 client.logOn({
@@ -21,17 +21,7 @@ client.on('loggedOn', () => {
 });
 
 client.on('webSession', async (value, cookies) => {
-  manager.setCookies(cookies, (error) => {
-    if (error) {
-      log.error('An error occurred while setting cookies.');
-    }
-  });
-
   community.setCookies(cookies);
-  community.startConfirmationChecker(
-    moment.duration(20, 'seconds'),
-    main.identitySecret
-  );
 
   await removeFriends();
   process.exit(0);
@@ -74,31 +64,3 @@ client.on('error', (error) => {
       break;
   }
 });
-
-client.on(
-  'accountLimitations',
-  (limited, communityBanned, locked, canInviteFriends) => {
-    if (limited) {
-      log.warn(
-        'Account is limited. Cannot send friend invites, use the market, open group chat, or access the web API.'
-      );
-      client.logOff();
-    }
-    if (communityBanned) {
-      log.warn('Account is banned from Steam Community');
-      client.logOff();
-    }
-    if (locked) {
-      log.warn(
-        'Account is locked. We cannot trade/gift/purchase items, play on VAC servers, or access Steam Community.  Shutting down.'
-      );
-      client.logOff();
-      // eslint-disable-next-line no-process-exit
-      process.exit(1);
-    }
-    if (!canInviteFriends) {
-      log.warn('Account is unable to send friend requests.');
-      client.logOff();
-    }
-  }
-);
